@@ -11,7 +11,7 @@ const {encode, decode} = pkg;
 
 let total_result = new BN(0);
 // *** SET HERE DESIRED block_id ***
-let block_id = 56350000; // random block at Dec 31 2021
+let block_id = 26490580; // dec 31 2020 // 56350000 Dec 31 2021
 
 function accountToLockup(masterAccountId, accountId) {
   return `${sha256(Buffer.from(accountId)).toString('hex').slice(0, 40)}.${masterAccountId}`;
@@ -291,7 +291,7 @@ async function lookup(account) {
   let accountId = prepareAccountId(inputAccountId);
 
   let lockupAccountId = '', lockupAccountBalance = 0, lockupReleaseStartTimestamp = new BN(0), lockupState = null,
-    lockedAmount;
+    lockupLockedAmount;
   // const template = document.getElementById('template').innerHTML;
   // document.getElementById('pools').innerHTML = '';
   try {
@@ -303,18 +303,18 @@ async function lookup(account) {
     // console.log("total " + total_result);
 
     ({lockupAccountId, lockupAccountBalance, lockupState} = await lookupLockup(near, accountId));
-    let liquid;
+    let lockupLiquid;
 
     if (lockupState) {
       // console.log(lockupAccountId);
       lockupReleaseStartTimestamp = getStartLockupTimestamp(lockupState);
-      lockedAmount = await getLockedTokenAmount(lockupState);
+      lockupLockedAmount = await getLockedTokenAmount(lockupState);
       // console.log("\t\tlockup total balance "  +lockupAccountBalance);
       // console.log("\t\tlockup locked " + lockedAmount);
       lockupAccountBalance = new BN(lockupAccountBalance);
-      liquid = lockupAccountBalance.sub(new BN(lockedAmount));
-      // console.log("\t\tlockup liquid " + liquid);
-      total_result = total_result.add(liquid);
+      lockupLiquid = lockupState.lockupAmount.sub(new BN(lockupLockedAmount));
+      // console.log("\t\tlockup lockupLiquid " + lockupLiquid);
+      total_result = total_result.add(lockupLiquid);
       // console.log("total " + total_result);
       lockupState.releaseDuration = lockupState.releaseDuration.div(new BN("1000000000"))
         .divn(60)
@@ -326,11 +326,12 @@ async function lookup(account) {
       // console.log(lockupState);
     }
     let ownerAccountBalance = await viewBalance(near.connection, inputAccountId);
-    lockupAccountBalance = lockupAccountBalance?.div(fromYocto) || "";
-    liquid = liquid?.div(fromYocto) || "";
-    lockedAmount = lockedAmount?.div(fromYocto) || "";
-
-    console.log(`${inputAccountId},${new BN(ownerAccountBalance).div(fromYocto)},${liquid},${lockupAccountBalance},${lockedAmount},,,`);
+    lockupAccountBalance = lockupAccountBalance?.add(lockupState.lockupAmount)?.div(fromYocto) || "";
+    lockupLiquid = lockupLiquid?.div(fromYocto) || "";
+    lockupLockedAmount = lockupLockedAmount?.div(fromYocto) || "";
+    // console.log(`account_id,owners_liquid_balance,lockup_liquid_balance,lockup_total_balance,lockup_locked_balance,staking_pool_accountId,staking_pool_direct_balance,staking_pool_lockup_balance`);
+    // total is 35 near more than locked + liquid because of the requirement on the storage needs
+    console.log(`${inputAccountId},${new BN(ownerAccountBalance).div(fromYocto)},${lockupLiquid},${lockupAccountBalance},${lockupLockedAmount},,,`);
   } catch (error) {
     console.error(error);
   }

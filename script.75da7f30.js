@@ -22492,30 +22492,28 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-var DOES_NOT_EXIST = " doesn't exist";
-
 function accountToLockup(masterAccountId, accountId) {
-  return "".concat((0, _jsSha.default)(Buffer.from(accountId)).toString("hex").slice(0, 40), ".").concat(masterAccountId);
+  return "".concat((0, _jsSha.default)(Buffer.from(accountId)).toString('hex').slice(0, 40), ".").concat(masterAccountId);
 }
 
 function prepareAccountId(data) {
-  if (data.toLowerCase().endsWith(".near")) {
-    return data.replace("@", "").replace("https://wallet.near.org/send-money/", "").toLowerCase();
+  if (data.toLowerCase().endsWith('.near')) {
+    return data.replace('@', '').replace('https://wallet.near.org/send-money/', '').toLowerCase();
   }
 
-  if (data.length === 64 && !data.startsWith("ed25519:")) {
+  if (data.length == 64 && !data.startsWith('ed25519:')) {
     return data;
   }
 
   var publicKey;
 
-  if (data.startsWith("NEAR")) {
+  if (data.startsWith('NEAR')) {
     publicKey = (0, _bs.decode)(data.slice(4)).slice(0, -4);
   } else {
-    publicKey = (0, _bs.decode)(data.replace("ed25519:", ""));
+    publicKey = (0, _bs.decode)(data.replace('ed25519:', ''));
   }
 
-  return publicKey.toString("hex");
+  return publicKey.toString('hex');
 }
 
 var readOption = function readOption(reader, f, defaultValue) {
@@ -22544,7 +22542,7 @@ function _viewLockupState() {
 
           case 2:
             result = _context.sent;
-            value = Buffer.from(result.values[0].value, "base64");
+            value = Buffer.from(result.values[0].value, 'base64');
             reader = new nearAPI.utils.serialize.BinaryReader(value);
             owner = reader.read_string();
             lockupAmount = reader.read_u128().toString();
@@ -22602,7 +22600,7 @@ function _viewLockupState() {
             return _context.abrupt("break", 30);
 
           case 28:
-            vestingInformation = "TODO";
+            vestingInformation = 'TODO';
             return _context.abrupt("break", 30);
 
           case 30:
@@ -22628,8 +22626,8 @@ function _viewLockupState() {
 }
 
 var options = {
-  nodeUrl: "https://rpc.mainnet.near.org",
-  networkId: "mainnet",
+  nodeUrl: 'https://rpc.mainnet.near.org',
+  networkId: 'mainnet',
   deps: {}
 };
 
@@ -22644,28 +22642,29 @@ function _lookupLockup() {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            lockupAccountId = accountToLockup("lockup.near", accountId);
-            _context2.prev = 1;
-            _context2.next = 4;
+            lockupAccountId = accountToLockup('lockup.near', accountId);
+            console.log(lockupAccountId);
+            _context2.prev = 2;
+            _context2.next = 5;
             return near.account(lockupAccountId);
 
-          case 4:
+          case 5:
             lockupAccount = _context2.sent;
-            _context2.next = 7;
-            return lockupAccount.viewFunction(lockupAccountId, "get_balance", {});
+            _context2.next = 8;
+            return lockupAccount.viewFunction(lockupAccountId, 'get_balance', {});
 
-          case 7:
+          case 8:
             lockupAccountBalance = _context2.sent;
-            _context2.next = 10;
+            _context2.next = 11;
             return viewLockupState(near.connection, lockupAccountId);
 
-          case 10:
+          case 11:
             lockupState = _context2.sent;
-            _context2.t0 = ["3kVY9qcVRoW3B5498SMX6R3rtSLiCdmBzKs7zcnzDJ7Q", "DiC9bKCqUHqoYqUXovAnqugiuntHWnM3cAc7KrgaHTu"];
-            _context2.next = 14;
+            _context2.t0 = ['3kVY9qcVRoW3B5498SMX6R3rtSLiCdmBzKs7zcnzDJ7Q', 'DiC9bKCqUHqoYqUXovAnqugiuntHWnM3cAc7KrgaHTu'];
+            _context2.next = 15;
             return lockupAccount.state();
 
-          case 14:
+          case 15:
             _context2.t1 = _context2.sent.code_hash;
             lockupState.hasBrokenTimestamp = _context2.t0.includes.call(_context2.t0, _context2.t1);
             return _context2.abrupt("return", {
@@ -22674,21 +22673,21 @@ function _lookupLockup() {
               lockupState: lockupState
             });
 
-          case 19:
-            _context2.prev = 19;
-            _context2.t2 = _context2["catch"](1);
-            console.log(_context2.t2);
+          case 20:
+            _context2.prev = 20;
+            _context2.t2 = _context2["catch"](2);
+            console.warn(_context2.t2);
             return _context2.abrupt("return", {
-              lockupAccountId: "".concat(lockupAccountId).concat(DOES_NOT_EXIST),
+              lockupAccountId: "".concat(lockupAccountId, " doesn't exist"),
               lockupAmount: 0
             });
 
-          case 23:
+          case 24:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[1, 19]]);
+    }, _callee2, null, [[2, 20]]);
   }));
   return _lookupLockup.apply(this, arguments);
 }
@@ -22705,7 +22704,7 @@ function _fetchPools() {
         switch (_context4.prev = _context4.next) {
           case 0:
             _context4.next = 2;
-            return masterAccount.connection.provider.sendJsonRpc("validators", [null]);
+            return masterAccount.connection.provider.sendJsonRpc('validators', [null]);
 
           case 2:
             result = _context4.sent;
@@ -22732,7 +22731,7 @@ function _fetchPools() {
                       case 0:
                         stake = nearAPI.utils.format.formatNearAmount(stakes.get(accountId), 2);
                         _context3.next = 3;
-                        return masterAccount.viewFunction(accountId, "get_reward_fee_fraction", {});
+                        return masterAccount.viewFunction(accountId, 'get_reward_fee_fraction', {});
 
                       case 3:
                         fee = _context3.sent;
@@ -22777,53 +22776,51 @@ function _updateStaking() {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            template = document.getElementById("pool-template").innerHTML;
-            document.getElementById("loader").classList.add("active");
-            document.getElementById("error").style.display = "none";
-            _context5.prev = 3;
-            _context5.next = 6;
+            template = document.getElementById('pool-template').innerHTML;
+            _context5.prev = 1;
+            _context5.next = 4;
             return near.account(accountId);
 
-          case 6:
+          case 4:
             masterAccount = _context5.sent;
-            _context5.next = 9;
+            _context5.next = 7;
             return fetchPools(masterAccount);
 
-          case 9:
+          case 7:
             pools = _context5.sent;
             result = [];
             i = 0;
 
-          case 12:
+          case 10:
             if (!(i < pools.length)) {
-              _context5.next = 27;
+              _context5.next = 24;
               break;
             }
 
-            _context5.next = 15;
+            _context5.next = 13;
             return masterAccount.viewFunction(pools[i].accountId, "get_account_total_balance", {
               account_id: accountId
             });
 
-          case 15:
+          case 13:
             directBalance = _context5.sent;
             lockupBalance = "0";
 
-            if (!(lookupAccountId && !lookupAccountId.includes(DOES_NOT_EXIST))) {
-              _context5.next = 21;
+            if (!lookupAccountId) {
+              _context5.next = 19;
               break;
             }
 
-            _context5.next = 20;
+            _context5.next = 18;
             return masterAccount.viewFunction(pools[i].accountId, "get_account_total_balance", {
               account_id: lookupAccountId
             });
 
-          case 20:
+          case 18:
             lockupBalance = _context5.sent;
 
-          case 21:
-            if (directBalance !== "0" || lockupBalance !== "0") {
+          case 19:
+            if (directBalance != "0" || lockupBalance != "0") {
               result.push({
                 accountId: pools[i].accountId,
                 directBalance: nearAPI.utils.format.formatNearAmount(directBalance, 2),
@@ -22831,34 +22828,33 @@ function _updateStaking() {
               });
             }
 
-            document.getElementById("loader").className = "";
-            document.getElementById("pools").innerHTML = _mustache.default.render(template, {
+            document.getElementById('pools').innerHTML = _mustache.default.render(template, {
               result: result,
               scannedNotDone: i < pools.length - 1,
               scanned: i,
               totalPools: pools.length
             });
 
-          case 24:
+          case 21:
             ++i;
-            _context5.next = 12;
+            _context5.next = 10;
             break;
 
-          case 27:
-            _context5.next = 32;
+          case 24:
+            _context5.next = 29;
             break;
 
-          case 29:
-            _context5.prev = 29;
-            _context5.t0 = _context5["catch"](3);
+          case 26:
+            _context5.prev = 26;
+            _context5.t0 = _context5["catch"](1);
             console.log(_context5.t0);
 
-          case 32:
+          case 29:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[3, 29]]);
+    }, _callee5, null, [[1, 26]]);
   }));
   return _updateStaking.apply(this, arguments);
 }
@@ -22979,7 +22975,7 @@ function _lookup() {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
-            inputAccountId = document.querySelector("#account").value;
+            inputAccountId = document.querySelector('#account').value;
             window.location.hash = inputAccountId;
             _context7.next = 4;
             return nearAPI.connect(options);
@@ -22987,9 +22983,9 @@ function _lookup() {
           case 4:
             near = _context7.sent;
             accountId = prepareAccountId(inputAccountId);
-            lockupAccountId = "", lockupAccountBalance = 0, ownerAccountBalance = 0, lockupReleaseStartTimestamp = new _bn.default(0), lockupState = null, lockedAmount = 0;
-            template = document.getElementById("template").innerHTML;
-            document.getElementById("pools").innerHTML = "";
+            lockupAccountId = '', lockupAccountBalance = 0, ownerAccountBalance = 0, lockupReleaseStartTimestamp = new _bn.default(0), lockupState = null, lockedAmount = 0;
+            template = document.getElementById('template').innerHTML;
+            document.getElementById('pools').innerHTML = '';
             _context7.prev = 9;
             _context7.next = 12;
             return near.account(accountId);
@@ -23026,7 +23022,17 @@ function _lookup() {
             lockupState.vestingInformation = formatVestingInfo(lockupState.vestingInformation);
 
           case 30:
-            document.getElementById("output").innerHTML = _mustache.default.render(template, {
+            _context7.next = 35;
+            break;
+
+          case 32:
+            _context7.prev = 32;
+            _context7.t0 = _context7["catch"](9);
+            console.error(_context7.t0);
+
+          case 35:
+            console.log(lockupState);
+            document.getElementById('output').innerHTML = _mustache.default.render(template, {
               accountId: accountId,
               lockupAccountId: lockupAccountId,
               ownerAccountBalance: nearAPI.utils.format.formatNearAmount(ownerAccountBalance, 2),
@@ -23036,25 +23042,15 @@ function _lookup() {
               lockupReleaseStartDate: new Date(lockupReleaseStartTimestamp.divn(1000000).toNumber()),
               lockupState: lockupState
             });
-            _context7.next = 33;
-            return updateStaking(near, accountId, lockupAccountId);
-
-          case 33:
             _context7.next = 39;
-            break;
-
-          case 35:
-            _context7.prev = 35;
-            _context7.t0 = _context7["catch"](9);
-            document.getElementById("error").style.display = "block";
-            document.getElementById("loader").classList.remove("active");
+            return updateStaking(near, accountId, lockupAccountId);
 
           case 39:
           case "end":
             return _context7.stop();
         }
       }
-    }, _callee7, null, [[9, 35]]);
+    }, _callee7, null, [[9, 32]]);
   }));
   return _lookup.apply(this, arguments);
 }
@@ -23064,7 +23060,7 @@ window.lookup = lookup;
 
 window.onload = function () {
   if (window.location.hash) {
-    document.querySelector("#account").value = window.location.hash.slice(1);
+    document.querySelector('#account').value = window.location.hash.slice(1);
     lookup();
   }
 };
@@ -23096,7 +23092,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61911" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61929" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
